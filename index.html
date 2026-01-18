@@ -186,7 +186,8 @@
         const SUPABASE_URL = 'https://sgcggcugqffpiywewfmr.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNnY2dnY3VncWZmcGl5d2V3Zm1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg3MDkxNjksImV4cCI6MjA4NDI4NTE2OX0.hLB9YKug5tN3Mo6DS8K0wIS54AfYr7LJQY2NfjMZguk';
 
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const { createClient } = supabase;
+        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let items = [];
 
@@ -197,7 +198,7 @@
         const checkedCount = document.getElementById('checkedCount');
 
         async function loadItems() {
-            const { data, error } = await supabase
+            const { data, error } = await supabaseClient
                 .from('shopping_items')
                 .select('*')
                 .order('created_at', { ascending: false });
@@ -261,7 +262,7 @@
                 return;
             }
 
-            const { data, error } = await supabase
+            const { data, error } = await supabaseClient
                 .from('shopping_items')
                 .insert([
                     { item_name: text, is_purchased: false }
@@ -281,7 +282,7 @@
         }
 
         async function deleteItem(id) {
-            const { error } = await supabase
+            const { error } = await supabaseClient
                 .from('shopping_items')
                 .delete()
                 .eq('id', id);
@@ -299,7 +300,7 @@
             const item = items.find(i => i.id === id);
             if (!item) return;
 
-            const { error } = await supabase
+            const { error } = await supabaseClient
                 .from('shopping_items')
                 .update({ is_purchased: !item.is_purchased })
                 .eq('id', id);
